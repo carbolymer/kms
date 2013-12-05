@@ -1,0 +1,13 @@
+n = 15
+m = 39
+epsilon = 1
+R = 0.38
+f = 1e4
+L = 2.3
+a = 0.38
+T = 1000
+tau = 5e-4
+So = 2
+Sd = 2
+Sout = 1
+Sxyz = 1

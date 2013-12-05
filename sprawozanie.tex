@@ -1,0 +1,323 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[T1]{fontenc}
+\usepackage{enumerate}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{morefloats}
+\author{Mateusz Gałażyn}
+\title{Ćwiczenie komputerowe z dynamiki molekularnej}
+\setlength{\topmargin}{0mm}
+\frenchspacing
+\begin{document}
+	\maketitle
+	\section{Wstęp}
+	Celem projektu było wyknanie symulacji dynamiki molekularnej atomów kryształu argonu. W tym celu został zaimplementowany algorytm symulacji oraz została napisana aplikacja wizualizacyjna w języku \verb|C++|. Dodatkowo została stworzony skrypt do generowania wykresów napisany w \verb|Octave|.
+	\section{Wyniki symulacji}
+	\subsection{Test programu}
+	Aplikacja została uruchomiona dla zestawu parametrów z instrukcji do ćwiczenia, temperatura została zmodyfikowana do wartości $T_0$ = 3000 K. Algorytm wykazuje wystarczającą stabilność dopiero przy wartości kroku czasowego mniejszej niż $\tau = 5 \cdot 10^{-4}$ ps dla długości symulacji 7000 kroków. W innych przypadkach chwilowa wartość energii rośnie do nieskończoności. Wyniki testów programu zostały przedstawione na rysunku \ref{performance}.
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.9\textwidth]{stability}
+	    \caption{Stosunek energii całkowitej układu do energii początkowej dla temperatury $T_0$=3000K}
+		\label{performance}
+	\end{figure}
+	\subsection{Parametry wejściowe}
+	Plik parametrów wejściowych dla aplikacji ma następującą postać:
+	\begin{verbatim}
+n = 5
+m = 39
+epsilon = 1
+R = 0.38
+f = 1e4
+L = 2.3
+a = 0.37
+T = 0
+tau = 5e-4
+So = 2000
+Sd = 2000
+Sout = 5
+Sxyz = 10
+	\end{verbatim}
+	W zależności od temperatury, lub wymiarów kryształu parametry \verb|T|, \verb|L|, \verb|n| były zmieniane. Reszta parametrów pozostawała stała dla każdej z przeprowadzonych symulacji.
+	\subsection{Symulacja kryształu}
+		Wyniki symulacji dla temperatury początkowej $T_0=0 K$. Wykresy energii, temperatury i ciśnienia zostały przedstawione na rysunkach \ref{0ke}, \ref{0kt}, \ref{0kp}. Wartość średniej temperatury i średniego ciśnienia wynosiła: \\
+		$\bar{T} = 0.77~K$\\
+		$\bar{P} = 0$ atm
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{0K/E}
+		    \caption{Wykres energii całkowitej i potencjału od czasu dla $T_0 = 0 K$}
+		    \label{0ke}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{0K/T}
+		    \caption{Wykres temperatury chwilowej od czasu dla temperatury $T_0 = 0 K$}
+		    \label{0kt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{0K/P}
+		    \caption{Wykres ciśnienia od czasu dla temperatury $T_0 = 0 K$}
+		    \label{0kp}
+	    \end{figure}
+	\clearpage
+	Dla róznych wartości stałej sieci zostały wykonane symulacje mające na celu potwierdzenie jej optymalnego wyboru. Wartości energii całkowitych zostały przedstawione w tabeli:
+	\begin{center}
+		\begin{tabular}{r|r}
+			$a$ [nm] & $\bar{H}$ [kJ/mol]\\
+			\hline
+			\hline
+			32 & 925.6\\
+			36 & -635.9 \\
+			36.5 & -662.3\\
+			37 & -674.5\\
+			37.25 & -676.3\\
+			37.5 & -675.8\\
+			37.75 & -673.3 \\
+			38 & -669\\
+		 	39 & -638.8 \\
+		 	40 & -595.6
+		\end{tabular}
+	\end{center}
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.9\textwidth]{net_const}
+	    \caption{Wartości energii dla stałych sieci.}
+	    \label{net_const}
+	\end{figure}
+	Wartość $a = 37$ nm jest optymalną wartością stałej sieci. Ta wartość została użyta we wszystkich symulacjach wykonanych w tym ćwiczeniu.
+	\subsubsection{Symulacja topienia kryształu}
+	Zostały wykonane symulacje dla temperatur 18 K, 50 K, 73 K, 80 K i 108K. W temperaturze 18 K widoczna jest wyraźnie struktura krystaliczna, atomy są wprowadzone w niewielkie drgania. W temperaturze 50 K, drgania atomów są już wyraźne, struktura krystaliczna jest wciąż rozpoznawalna, atomy tworzą zwartą strukturę. Dla temperatury 73 K atomy są związane nadal zwarty układ. W temperaturze 80 K zauważalny był wzrost swobodnych atomów, co może świadczyć o przejściu fazowym w okolicy tej temperatury. W temperaturze 108 K duża liczba atomów zostaje uwolnonych, wyraźne staje się przejście do stanu gazowego. Na podstawie obserwacji zachowania cząsteczek można wnioskować, że temperatura topnienia argonu jest w przedziale od 83 do 108 K. Poniżej zostały przedstawione wizualizacje rozkładu atomów wraz z sferą o promieniu $L = 2.3$ nm.
+
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.75\textwidth]{18K/screenshot.png}
+		    \caption{Układ atomów dla $\bar{T} = 18 K$}
+		    \label{18t}
+	    \end{figure}
+
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.75\textwidth]{50K/screenshot.png}
+		    \caption{Układ atomów dla $\bar{T} = 50 K$}
+		    \label{50t}
+	    \end{figure}
+
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.75\textwidth]{73K/screenshot.png}
+		    \caption{Układ atomów dla $\bar{T} = 73 K$}
+		    \label{73t}
+	    \end{figure}
+
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.75\textwidth]{80K/screenshot.png}
+		    \caption{Układ atomów dla $\bar{T} = 80 K$}
+		    \label{80t}
+	    \end{figure}
+
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.75\textwidth]{108K/screenshot.png}
+		    \caption{Układ atomów dla $\bar{T} = 108 K$}
+		    \label{108t}
+	    \end{figure}
+
+
+	\clearpage
+	\subsection{Symulacja gazu}
+	Aby zbadać zachowanie gazu i porównać z prawem gazu doskonałego zostały wykonane symulacje dla temperatur początkowych $T_0$ 500 K, 1000 K, 1500 K, 2000 K dla $n = 15$, 3 375 atomów. Wyniki symulacji:
+	\begin{center}
+	\begin{tabular}{r|r|r}
+		$T_0$ [K] & $\bar{T}$ [K] & $\bar{P}$ [atm]\\
+		\hline
+		\hline
+		500 & 137.77 & 20.02 \\
+		1000 & 519.57 & 324.42 \\
+		1500 & 1071.21 & 542.23 \\
+	 	2000 & 1582.79 & 687.85
+	\end{tabular} 
+	\end{center}
+	Wykresy przedstawiające chwilowe funkcje stanu układu zostały przedstawione na rysunkach \ref{500ke} - \ref{2000kpp}. Dodatkowo został przedstawiony rozkład pędów na początku symulacji oraz na końcu symulacji. Na histogramach pędu zostały narysowane teoretyczne rozkłady Maxwella dla chwili początkowej oraz końcowej symulacji.
+		%%%%%%%%%%%%
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{500K/E}
+		    \caption{Wykres energii całkowitej i potencjału od czasu dla $T_0 = 500 K$}
+		    \label{500ke}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{500K/T}
+		    \caption{Wykres temperatury chwilowej od czasu dla temperatury $T_0 = 500 K$}
+		    \label{500kt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{500K/P}
+		    \caption{Wykres ciśnienia od czasu dla temperatury $T_0 = 500 K$}
+		    \label{500kp}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{500K/PT}
+		    \caption{Trajektowa fazowa w przestrzeni $p-T$ dla temperatury $T_0 = 500 K$}
+		    \label{500kpt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{500K/p}
+		    \caption{Rozkład pędów cząstek w chwili rozpoczęcia i po zakończeniu symulacji dla $T_0 = 500 K$}
+		    \label{500kpp}
+	    \end{figure}	    
+		
+		%%%%%%%%%%%%
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K/E}
+		    \caption{Wykres energii całkowitej i potencjału od czasu dla $T_0 = 1000 K$}
+		    \label{1000ke}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K/T}
+		    \caption{Wykres temperatury chwilowej od czasu dla temperatury $T_0 = 1000 K$}
+		    \label{1000kt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K/P}
+		    \caption{Wykres ciśnienia od czasu dla temperatury $T_0 = 1000 K$}
+		    \label{1000kp}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K/PT}
+		    \caption{Trajektowa fazowa w przestrzeni $p-T$ dla temperatury $T_0 = 1000 K$}
+		    \label{1000kpt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K/p}
+		    \caption{Rozkład pędów cząstek w chwili rozpoczęcia i po zakończeniu symulacji dla $T_0 = 1000 K$}
+		    \label{1000kpp}
+	    \end{figure}
+
+		%%%%%%%%%%%%
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1500K/E}
+		    \caption{Wykres energii całkowitej i potencjału od czasu dla $T_0 = 1500 K$}
+		    \label{1500ke}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1500K/T}
+		    \caption{Wykres temperatury chwilowej od czasu dla temperatury $T_0 = 1500 K$}
+		    \label{1500kt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1500K/P}
+		    \caption{Wykres ciśnienia od czasu dla temperatury $T_0 = 1500 K$}
+		    \label{1500kp}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1500K/PT}
+		    \caption{Trajektowa fazowa w przestrzeni $p-T$ dla temperatury $T_0 = 1500 K$}
+		    \label{1500kpt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1500K/p}
+		    \caption{Rozkład pędów cząstek w chwili rozpoczęcia i po zakończeniu symulacji dla $T_0 = 1500 K$}
+		    \label{1500kpp}
+	    \end{figure}			
+
+		%%%%%%%%%%%%
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{2000K/E}
+		    \caption{Wykres energii całkowitej i potencjału od czasu dla $T_0 = 2000 K$}
+		    \label{2000ke}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{2000K/T}
+		    \caption{Wykres temperatury chwilowej od czasu dla temperatury $T_0 = 2000 K$}
+		    \label{2000kt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{2000K/P}
+		    \caption{Wykres ciśnienia od czasu dla temperatury $T_0 = 2000 K$}
+		    \label{2000kp}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{2000K/PT}
+		    \caption{Trajektowa fazowa w przestrzeni $p-T$ dla temperatury $T_0 = 2000 K$}
+		    \label{2000kpt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{2000K/p}
+		    \caption{Rozkład pędów cząstek w chwili rozpoczęcia i po zakończeniu symulacji dla $T_0 = 2000 K$}
+		    \label{2000kpp}
+	    \end{figure}	
+	\clearpage
+	Dane dla każdej temperatury początkowej zostały następnie porównane na wykresie $\bar{P}(\bar{T})$ z teoretyczną zależnością:
+	\begin{equation}
+		Pv = \frac{3}{2} N k T .
+		\label{gaz}
+	\end{equation}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{pvnkt}
+		    \caption{Zależność średniego ciśnienia od średniej temperatury dla wykonanych symulacji.}
+		    \label{pT}
+	    \end{figure}
+		\subsubsection{Pędy początkowe o rozkładzie jednostajnym}
+		W celu zbadania zachowania aplikacji oraz zweryfikowania rozkładu Maxwella, została wykonana symulacja dla pędów generowanych z rozkładu jednostajnego dla temperatury $T = 1000$ K, dla układu 3 375 cząsteczek. Początkowy rozkład pędu ma kształt zbliżony do krzywej Gaussa. Wynika to z Centralnego Twierdzenia Granicznego: $p_x$, $p_y$, $p_z$ mają rozkład jednorodny, rozkład $p = \sqrt{p_x^2 + p_y^2 + p_z^2}$ będzie miał kształt zbliżony do rozkładu Gaussa. Będzie to zniekształcony rozkład normalny, z powodu obecności potęg oraz pierwiastka w powyższym wzorze.
+		%%%%%%%%%%%%
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K_uniform/E}
+		    \caption{Wykres energii całkowitej i potencjału od czasu dla $T_0 = 1000 K$}
+		    \label{1000kue}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K_uniform/T}
+		    \caption{Wykres temperatury chwilowej od czasu dla temperatury $T_0 = 1000 K$}
+		    \label{1000kut}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K_uniform/P}
+		    \caption{Wykres ciśnienia od czasu dla temperatury $T_0 = 1000 K$}
+		    \label{1000kup}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K_uniform/PT}
+		    \caption{Trajektowa fazowa w przestrzeni $p-T$ dla temperatury $T_0 = 1000 K$}
+		    \label{1000kupt}
+	    \end{figure}
+	    \begin{figure}[h]
+		    \centering
+		    \includegraphics[width=0.9\textwidth]{1000K_uniform/p}
+		    \caption{Rozkład pędów cząstek w chwili rozpoczęcia i po zakończeniu symulacji dla $T_0 = 1000 K$}
+		    \label{1000kupp}
+	    \end{figure}
+	\clearpage		
+	\section{Wnioski}
+	W trakcie ćwiczenia został napisany kod w języku \verb|C++| służący do przeprowadzania symulacji kryształu argonu. Zostały wykonane symulacje dla różnych temperatur początkowych. Wyniki symulacji są zgodne z prawem gazu doskonałego \eqref{gaz}. Rozkłady pędów po przeprowadzeniu symulacji zbiegają się do rozkładu Maxwella, dotyczy to również symulacji dla wartości początkowych pędów z rozkładu jednorodnego (rys. \ref{1000kupp}).
+\end{document}
